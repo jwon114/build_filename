@@ -24,5 +24,3 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 		for icode in iguana_data:
 			if vcode[0] == icode[0]:
 				results.writerow(icode)
-
-print(results)
