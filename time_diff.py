@@ -15,7 +15,8 @@ vitro_time = ['2016-12-27 03:51:48.313',
 '2017-01-09 08:46:34.493',
 '2017-01-09 08:46:36.557']
 
-#['27/12/2016 14:51', '09/01/2017 15:36', '09/01/2017 19:44', '09/01/2017 19:46', '09/01/2017 19:46']
+# Vitro to local time
+#['27/12/2016 14:51:48', '09/01/2017 15:36:22', '09/01/2017 19:44:56', '09/01/2017 19:46:34', '09/01/2017 19:46:36']
 local_tz = pytz.timezone('Australia/Sydney')
 
 #testing
@@ -33,9 +34,9 @@ print(vitro_time)
 for itime in iguana_time:
   for vtime in vitro_time:
     itime_formatted = datetime.strptime(itime, '%d/%m/%Y %H:%M:%S')
-    max_time = itime_formatted + timedelta(minutes=5)
+    max_time = itime_formatted + timedelta(seconds=0.5)
     vtime_formatted = datetime.strptime(vtime, '%d/%m/%Y %H:%M:%S')
     if itime_formatted > vtime_formatted and vtime_formatted < max_time:
-      print(itime)
+      print(max_time)
 
 #print(vitro_time)
