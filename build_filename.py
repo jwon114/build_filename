@@ -27,7 +27,7 @@ with open(VITRO_DATA_SRC, newline='') as vitroInput:
 		vitro_data_keys.append(row[0])
 
 def formatTimezone(dt, local_tz):
-	return datetime.strptime(dt, '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc).astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
+	return datetime.strptime(dt, '%Y-%m-%d %H:%M:%S.%f').replace(microsecond=0).replace(tzinfo=pytz.utc).astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
 
 with open(RESULTS_SRC, 'w', newline='') as csvfile:
 	print('Opening file for writing')
@@ -47,7 +47,7 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 					itime = datetime.strptime(iguana_data[IGindex][2], '%d/%m/%Y %H:%M:%S')
 					vtime_formatted = formatTimezone(vitro_data[Vindex][2], local_tz)
 					vtime = datetime.strptime(vtime_formatted, '%d/%m/%Y %H:%M:%S')
-					if (itime == vtime) or (itime > vtime and vtime < (itime + timedelta(seconds=1))):
+					if (itime == vtime) or (itime < vtime and vtime <= (itime + timedelta(seconds=1))):
 						actID = vitro_data[Vindex][1]
 						vitroDT = vitro_data[Vindex][2]
 						results.writerow(iguana_data[IGindex] + [vtime] + [vitroDT] + [actID])
