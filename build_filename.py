@@ -57,10 +57,7 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 				if match:
 					Vindices.remove(Vindex)
 				else:
-					print('No Datetime Match for Vitro Index :' + str(Vindex))
-					with open(NO_MATCH_SRC, 'w', newline='') as nomatchcsv:
-						out = csv.writer(nomatchcsv, delimiter=',')
-						out.writerow(vitro_data[Vindex])
+					print('No Datetime Match for Vitro Index :' + str(vitro_data[Vindex]))
 					
 			#remove from search
 			iguana_data = [data for data in iguana_data if iguana_data.index(data) not in IGIndices_delete]

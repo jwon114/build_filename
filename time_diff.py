@@ -29,14 +29,24 @@ for vtime in vitro_time:
   vitro_time_formatted = datetime.strptime(vtime, '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc).astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
   vitro_time[index] = vitro_time_formatted
 
-print(vitro_time)
+#print(vitro_time)
+
+vitro_time_formatted = datetime.strptime('2017-01-22 06:18:30.050', '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc).astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
+
+print(vitro_time_formatted)
+igtime = datetime.strptime('22/01/2017 17:18:29', '%d/%m/%Y %H:%M:%S')
+igtime = igtime + timedelta(seconds=1)
+vitro_time_formatted = datetime.strptime(vitro_time_formatted, '%d/%m/%Y %H:%M:%S')
+
+if vitro_time_formatted < igtime:
+  print('yes')
 
 for itime in iguana_time:
   for vtime in vitro_time:
     itime_formatted = datetime.strptime(itime, '%d/%m/%Y %H:%M:%S')
-    max_time = itime_formatted + timedelta(seconds=0.5)
+    max_time = itime_formatted + timedelta(seconds=3)
     vtime_formatted = datetime.strptime(vtime, '%d/%m/%Y %H:%M:%S')
-    if itime_formatted > vtime_formatted and vtime_formatted < max_time:
-      print(max_time)
+    #if itime_formatted > vtime_formatted and vtime_formatted < max_time:
+      #print(max_time)
 
 #print(vitro_time)
