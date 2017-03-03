@@ -8,6 +8,7 @@ import pytz
 IGUANA_DATA_SRC = 'C:\\Python\\Data\\iguana_data.csv'
 VITRO_DATA_SRC = 'C:\\Python\\Data\\vitro_data.csv'
 RESULTS_SRC = 'C:\\Python\\Data\\results.csv'
+NO_MATCH_SRC = 'C:\\Python\\Data\\no_match.csv'
 
 iguana_data = []
 vitro_data = []
@@ -29,14 +30,19 @@ def formatTimezone(dt, local_tz):
 	return datetime.strptime(dt, '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc).astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
 
 with open(RESULTS_SRC, 'w', newline='') as csvfile:
+	print('Opening file for writing')
 	results = csv.writer(csvfile, delimiter=',')
+	print('Calculating...')
 	for vcode in vitro_data_keys:
 		if vcode in iguana_data_keys:
 			#list of indexes
 			IGindices = [i for i, x in enumerate(iguana_data_keys) if x == vcode]
 			Vindices = [i for i, x in enumerate(vitro_data_keys) if x == vcode]
+			IGIndices_delete = IGindices
+			VIndices_delete = Vindices
 
 			for IGindex in IGindices:
+				match = False
 				for Vindex in Vindices:
 					itime = datetime.strptime(iguana_data[IGindex][2], '%d/%m/%Y %H:%M:%S')
 					vtime_formatted = formatTimezone(vitro_data[Vindex][2], local_tz)
@@ -45,19 +51,18 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 						actID = vitro_data[Vindex][1]
 						vitroDT = vitro_data[Vindex][2]
 						results.writerow(iguana_data[IGindex] + [vtime] + [vitroDT] + [actID])
-						#remove from search
-						IGindices.remove(IGindex)
-						Vindices.remove(Vindex)
-					print(IGindices)
-					print(Vindices)
-					print(IGindex)
-					print(Vindex)
-
+						match = True
+						break
+					
+				if match:
+					Vindices.remove(Vindex)
+				else:
+					print('No Datetime Match for Vitro Index :' + str(Vindex))
+					with open(NO_MATCH_SRC, 'w', newline='') as nomatchcsv:
+						out = csv.writer(nomatchcsv, delimiter=',')
+						out.writerow(vitro_data[Vindex])
+					
 			#remove from search
-			for IGindex in IGindices:
-				del iguana_data[IGindex]
-				del iguana_data_keys[IGindex]
-
-			for Vindex in Vindices:
-				del vitro_data[Vindex]
-				del vitro_data_keys[Vindex]
+			iguana_data = [data for data in iguana_data if iguana_data.index(data) not in IGIndices_delete]
+			iguana_data_keys = [data for data in iguana_data_keys if iguana_data_keys.index(data) not in IGIndices_delete]
+			
