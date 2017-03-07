@@ -34,8 +34,11 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 	results = csv.writer(csvfile, delimiter=',')
 	print('Calculating...')
 	results.writerow(['MRN_EPISODE_NUMBER, GUID, IG_DATETIME, V_DATETIME_FORMATTED, V_DATETIME, ACT_ID'])
+	vitro_in_iguana = 0
+	failed = 0
 	for vcode in vitro_data_keys:
 		if vcode in iguana_data_keys:
+			vitro_in_iguana += 1
 			#list of indexes
 			IGindices = [i for i, x in enumerate(iguana_data_keys) if x == vcode]
 			Vindices = [i for i, x in enumerate(vitro_data_keys) if x == vcode]
@@ -61,8 +64,11 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 					Vindices.remove(Vindex)
 				else:
 					print('No Datetime Match for Vitro Index :' + str(vitro_data[Vindex]))
+					failed += 1
 					
 			#remove from search
 			iguana_data = [data for data in iguana_data if iguana_data.index(data) not in IGIndices_delete]
 			iguana_data_keys = [data for data in iguana_data_keys if iguana_data_keys.index(data) not in IGIndices_delete]
 			
+	print('Finished processing: ' + str(vitro_in_iguana) + ' matching out of , ' + str(len(iguana_data_keys)) + ' Iguana keys and ' + str(len(vitro_data_keys)) + ' Vitro keys, ' + str(failed) + ' failed with no datetime match')
+	
