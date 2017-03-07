@@ -33,7 +33,7 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 	print('Opening file for writing')
 	results = csv.writer(csvfile, delimiter=',')
 	print('Calculating...')
-	results.writerow(['MRN_EPISODE_NUMBER, GUID, IG_DATETIME, V_DATETIME_FORMATTED, V_DATETIME, ACT_ID'])
+	results.writerow(['MRN_EPISODE_NUMBER, GUID, IG_DATETIME, V_DATETIME_FORMATTED, V_DATETIME_UTC, ACT_ID'])
 	iguana_total = len(iguana_data_keys)
 	vitro_in_iguana = 0
 	failed = 0
