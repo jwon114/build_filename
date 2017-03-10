@@ -64,12 +64,18 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 					Vindices.remove(Vindex)
 					vitro_in_iguana += 1
 				else:
-					print('No Datetime Match for Vitro Index :' + str(vitro_data[Vindex]))
-					failed += 1
+					with open(NO_MATCH_SRC, 'a', 1) as no_match:
+						print('No Datetime Match for Vitro Index :' + str(vitro_data[Vindex]))
+						no_match.write('No Datetime Match for Vitro Index :' + str(vitro_data[Vindex]) + '\n')
+						failed += 1
 					
 			#remove from search
 			iguana_data = [data for data in iguana_data if iguana_data.index(data) not in IGIndices_delete]
 			iguana_data_keys = [data for data in iguana_data_keys if iguana_data_keys.index(data) not in IGIndices_delete]
 			
+		else:
+			with open(NO_MATCH_SRC, 'a', 1) as no_match:
+				no_match.write('No Vitro MRN_EPISODE_NUMBER in Iguana logs: ' + str(vcode) + '\n')
+				
 	print('Finished processing: ' + str(vitro_in_iguana) + ' matching out of ' + str(iguana_total) + ' Iguana keys and ' + str(len(vitro_data_keys)) + ' Vitro keys, ' + str(failed) + ' failed with no datetime match')
 	
