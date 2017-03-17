@@ -29,7 +29,7 @@ with open(VITRO_DATA_SRC, newline='') as vitroInput:
 def formatTimezone(dt, local_tz):
 	return datetime.strptime(dt, '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc).astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
 
-with open(RESULTS_SRC, 'w', newline='') as csvfile:	
+with open(RESULTS_SRC, 'w', 1, newline='') as csvfile:	
 	print('Opening file for writing')
 	results = csv.writer(csvfile, delimiter=',')
 	print('Calculating...')
@@ -42,8 +42,6 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 			#list of indexes
 			IGindices = [i for i, x in enumerate(iguana_data_keys) if x == vcode]
 			Vindices = [i for i, x in enumerate(vitro_data_keys) if x == vcode]
-			IGIndices_delete = IGindices
-			VIndices_delete = Vindices
 
 			for IGindex in IGindices:
 				match = False
@@ -70,8 +68,8 @@ with open(RESULTS_SRC, 'w', newline='') as csvfile:
 						failed += 1
 					
 			#remove from search
-			iguana_data = [data for data in iguana_data if iguana_data.index(data) not in IGIndices_delete]
-			iguana_data_keys = [data for data in iguana_data_keys if iguana_data_keys.index(data) not in IGIndices_delete]
+			iguana_data = [data for data in iguana_data if iguana_data.index(data) not in IGindices]
+			iguana_data_keys = [data for data in iguana_data_keys if iguana_data_keys.index(data) not in IGindices]
 			
 		else:
 			with open(NO_MATCH_SRC, 'a', 1) as no_match:
