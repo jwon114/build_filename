@@ -9,6 +9,7 @@ IGUANA_DATA_SRC = 'C:\\Python\\Data\\iguana_data.csv'
 VITRO_DATA_SRC = 'C:\\Python\\Data\\vitro_data.csv'
 RESULTS_SRC = 'C:\\Python\\Data\\results.csv'
 NO_MATCH_SRC = 'C:\\Python\\Data\\no_match.csv'
+FC_SRC = 'C:\\Python\\Data\\file_copy.csv'
 
 iguana_data = []
 vitro_data = []
@@ -37,6 +38,12 @@ with open(RESULTS_SRC, 'w', 1, newline='') as csvfile:
 	iguana_total = len(iguana_data_keys)
 	vitro_in_iguana = 0
 	failed = 0
+	
+	invalid_vitro_data_keys = [key for key in vitro_data_keys if key not in iguana_data_keys]
+	for key in invalid_vitro_data_keys:
+		with open(NO_MATCH_SRC, 'a', 1) as no_match:
+			no_match.write('No Vitro MRN_EPISODE_NUMBER in Iguana logs: ' + str(key) + '\n')
+	
 	for vcode in vitro_data_keys:
 		if vcode in iguana_data_keys:			
 			#list of indexes
@@ -55,6 +62,9 @@ with open(RESULTS_SRC, 'w', 1, newline='') as csvfile:
 						actID = vitro_data[Vindex][1]
 						vitroDT = vitro_data[Vindex][2]
 						results.writerow(iguana_data[IGindex] + [vtime_formatted] + [vitroDT] + [actID])
+						with open(FC_SRC, 'a', 1, newline='') as fc_csvfile:
+							fc_results = csv.writer(fc_csvfile, delimiter=',')
+							fc_results.writerow([actID] + [iguana_data[IGindex][1]])
 						match = True						
 						break
 					
@@ -69,11 +79,7 @@ with open(RESULTS_SRC, 'w', 1, newline='') as csvfile:
 					
 			#remove from search
 			iguana_data = [data for data in iguana_data if iguana_data.index(data) not in IGindices]
-			iguana_data_keys = [data for data in iguana_data_keys if iguana_data_keys.index(data) not in IGindices]
-			
-		else:
-			with open(NO_MATCH_SRC, 'a', 1) as no_match:
-				no_match.write('No Vitro MRN_EPISODE_NUMBER in Iguana logs: ' + str(vcode) + '\n')
+			iguana_data_keys = [data for data in iguana_data_keys if iguana_data_keys.index(data) not in IGindices]		
 				
 	print('Finished processing: ' + str(vitro_in_iguana) + ' matching out of ' + str(iguana_total) + ' Iguana keys and ' + str(len(vitro_data_keys)) + ' Vitro keys, ' + str(failed) + ' failed with no datetime match')
 	
